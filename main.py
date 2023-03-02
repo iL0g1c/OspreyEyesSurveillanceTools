@@ -41,12 +41,17 @@ def catalog(users):
 			for item in catalog:
 				if item["acid"] == user["acid"]:
 					match_check = True
-					if user["cs"] not in item["callsigns"]:
+					if item["cur_callsign"] != user["cs"]:
+						item["cur_callsign"] = user["cs"]
+						
 						now = datetime.now()
 						date_str = now.strftime("%Y-%m-%d %H-%M-%S")
-
 						cur_index = catalog.index(item)
-						item["callsigns"][user["cs"]] = date_str
+						
+						if user["cs"] not in item["callsigns"]:
+							item["callsigns"][user["cs"]] = [date_str]
+						else:
+							item["callsigns"][user["cs"]].append(date_str)
 						catalog[cur_index] = item
 						print(f"{user['acid']} changed their callsign to {user['cs']}")
 			if not match_check:
@@ -54,7 +59,8 @@ def catalog(users):
 				date_str = now.strftime("%Y-%m-%d %H-%M-%S")
 				catalog.append({
 					"acid": int(user["acid"]),
-					"callsigns": {user["cs"]: date_str}
+					"cur_callsign": user["cs"],
+					"callsigns": {user["cs"]: [date_str]}
 				})
 	save_catalog(catalog)
 	
