@@ -1,6 +1,11 @@
 # GeoFS Callsign Tracker
 ### An OspreyEyes Creation
 
+## How to Use
+1. You must have python installed on your machine.
+2. You must install all packages for this script. Look in the code, since I am too lazy to create a requirements.txt file.
+3. Run the script.
+
 ## Rationale
 In GeoFS MRP, people are constantly commiting FRP actions. Some of these include changing their callsign after being killed, and then rejoining the fight.
 **This script will put an end to this.**
