@@ -1,10 +1,26 @@
 # GeoFS Callsign Tracker
 ### An OspreyEyes Creation
 
-## How to Use
-1. You must have python installed on your machine.
-2. You must install all packages for this script. Look in the code, since I am too lazy to create a requirements.txt file.
-3. Run the script.
+## How to run from release
+1. Go to releases and download the windows 10 executable. (This only works on windows 10)
+2. Run executable.
+3. The data log will be created in the same folder as the executable.
+
+## How to run from source
+### Run using python
+1. Clone the repository.
+2. You must have python installed on your machine.
+3. You must install all packages for this script. Look in the code, since I am too lazy to create a requirements.txt file.
+4. Run the script.
+
+### Build from source
+1. Clone the repository.
+2. Install pyinstaller
+3. Run ```pyinstaller -n callsignTracker --onefile src/main.py --distpath bin/```
+4. Wait for build to finish.
+5. Run the executable from the windows explorer.
+
+_It is possible to use pyinstaller to build for another target OS, but this has not been tested._
 
 ## Rationale
 In GeoFS MRP, people are constantly commiting FRP actions. Some of these include changing their callsign after being killed, and then rejoining the fight.
@@ -26,7 +42,7 @@ I have not tested running the script 24/7, and I suspect the preformance will de
 The user has to be online on GeoFS for their callsign to update in the database. If they change their callsign, but don't join the server, this script won't detect that. This shouldn't be a problem though, since they can't commit FRP while offline.
 
 ## Planned Features
-1. Time stamps for when the callsigns are changed.
+1. Porting to other Operating Systems besides Windows.
 2. Improved performance
 
 Feel free to suggest more ideas/bugs in the ideas tab.
