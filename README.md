@@ -1,3 +1,4 @@
+**DISCLAIMER: THIS SCRIPT IS IN BETA AND MAY NOT PERFORM AS EXPECTED.**
 # GeoFS Callsign Tracker
 ### An OspreyEyes Creation
 
