@@ -3,6 +3,7 @@ import requests
 import json
 import jsonlines
 import time
+from datetime import datetime
 
 
 def get_users():
@@ -17,7 +18,7 @@ def get_users():
 		response_body = json.loads(response.text)
 		return response_body["users"]
 	except:
-		print("connection error")
+		print("Error Code 0x1: Can not connect to GeoFS.")
 
 def load_catalog():
 	catalog = []
@@ -41,13 +42,19 @@ def catalog(users):
 				if item["acid"] == user["acid"]:
 					match_check = True
 					if user["cs"] not in item["callsigns"]:
+						now = datetime.now()
+						date_str = now.strftime("%Y-%m-%d %H-%M-%S")
+
 						cur_index = catalog.index(item)
-						item["callsigns"].append(user["cs"])
+						item["callsigns"][user["cs"]] = date_str
 						catalog[cur_index] = item
+						print(f"{user['acid']} changed their callsign to {user['cs']}")
 			if not match_check:
+				now = datetime.now()
+				date_str = now.strftime("%Y-%m-%d %H-%M-%S")
 				catalog.append({
 					"acid": int(user["acid"]),
-					"callsigns": [user["cs"]]
+					"callsigns": {user["cs"]: date_str}
 				})
 	save_catalog(catalog)
 	
@@ -55,6 +62,7 @@ def catalog(users):
 			
 
 def main():
+	print("Starting Tracking...")
 	while True:
 		users = get_users()
 		catalog(users)
