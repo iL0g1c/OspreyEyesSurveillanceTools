@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['src\\main.py'],
+    ['src\\callsignTracker.py'],
     pathex=[],
     binaries=[],
     datas=[],

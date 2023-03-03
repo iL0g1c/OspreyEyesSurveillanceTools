@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\assets",
+    "\\bin",
+    "\\build",
+    "\\src"
   ],
-  "SelectedNode": "\\main.py",
+  "SelectedNode": "\\src\\catalog.py",
   "PreviewInSolutionExplorer": false
 }
