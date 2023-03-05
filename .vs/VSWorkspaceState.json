@@ -1,11 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\assets",
     "\\bin",
     "\\build",
+    "\\build\\gui",
+    "\\build\\gui\\localpycs",
     "\\src"
   ],
-  "SelectedNode": "\\src\\catalog.py",
+  "SelectedNode": "\\src\\gui.py",
   "PreviewInSolutionExplorer": false
 }
