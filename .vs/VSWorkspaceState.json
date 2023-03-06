@@ -2,11 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\bin",
-    "\\build",
-    "\\build\\gui",
-    "\\build\\gui\\localpycs",
     "\\src"
   ],
-  "SelectedNode": "\\src\\gui.py",
+  "SelectedNode": "\\src\\callsignTracker.py",
   "PreviewInSolutionExplorer": false
 }

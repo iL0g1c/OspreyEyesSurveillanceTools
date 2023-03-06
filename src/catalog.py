@@ -1,6 +1,7 @@
 from typing_extensions import Self
 import jsonlines
 from datetime import datetime
+import os
 
 class Catalog:
 	def __init__(self):
@@ -8,6 +9,8 @@ class Catalog:
 		self.msg = ""
 		
 	def load_catalog(self):
+		if not os.path.exists("catalog.jsonl"):
+			return 1
 		self.catalog = []
 		with jsonlines.open("catalog.jsonl") as reader:
 			for obj in reader:
