@@ -3,6 +3,7 @@ import threading
 
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+import textwrap
 
 from catalog import Catalog
 from callsignTracker import guiRunner
@@ -21,10 +22,16 @@ def search(query, method):
                 results.append(f"Account ID: {entry['acid']} | Current Callsign: {entry['cur_callsign']} | History: {entry['callsigns']}")
         elif method == "Callsign":
             cur_callsigns = list(entry["callsigns"].keys())
+            candidate = False
             for callsign in cur_callsigns:
                ratio = fuzz.token_set_ratio(query, callsign)
                if ratio >= threshold:
-                   results.append(f"Account ID: {entry['acid']} | Current Callsign: {entry['cur_callsign']} | History: {entry['callsigns']}")
+                   candidate = True
+            if candidate:
+                lines = textwrap.fill(f"Account ID: {entry['acid']} | Current Callsign: {entry['cur_callsign']} | History: {entry['callsigns']}", 200).split("\n")
+                for item in lines:
+                    results.append(item)
+
     return None, results
 def main():
     thread = None
@@ -52,7 +59,7 @@ def main():
             if error == 1:
                 sg.popup_error("There is not a catalog.jsonl file in the same program's directory. Please generate one with the Callsign Tracker.")
             elif values["-SEARCHTYPE-"] not in ("Account ID", "Callsign"):
-                sg.popup_error("Invalid search method. Please select an option from the dropdown menu.")
+                sg.popup_error("Invalid search method. Please select an option from the dropdown menu.") 
             elif values["-SEARCH-"] == "":
                 sg.popup_error("You have not entered a search term.")
             window['-RESULTS-'].update(values=results)
@@ -63,12 +70,14 @@ def main():
                 console_enabled = False
                 stop_event.set()
                 thread.join()
+                window['-CONSOLE-'].update("OPEN")
             else:
                 print("Launching tracker...")
                 console_enabled = True
                 stop_event.clear()
                 thread = threading.Thread(target=guiRunner, args=(stop_event,))
                 thread.start()
+                window['-CONSOLE-'].update("CLOSE")
     window.close()
 
 if __name__ in "__main__":

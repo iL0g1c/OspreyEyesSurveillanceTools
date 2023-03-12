@@ -13,7 +13,12 @@ def guiRunner(stop_event):
 	catalog = Catalog()
 	print("Starting Tracking...")
 	while True:
-		users = get_users()
+		error, users = get_users()
+		if error:
+			for i in range(10):
+				print(f"Exiting tracker in... ({i+1})")
+				time.sleep(1)
+			break
 		catalog.parse(users)
 		if stop_event.is_set():
 			print("Closed.")
@@ -25,7 +30,12 @@ def main():
 	catalog = Catalog()
 	print("Starting Tracking...")
 	while True:
-		users = get_users()
+		error, users = get_users()
+		if error:
+			for i in range(10):
+				print(f"Exiting in... ({i+1})")
+				time.sleep(1)
+			break
 		catalog.parse(users)
 		time.sleep(1)
 

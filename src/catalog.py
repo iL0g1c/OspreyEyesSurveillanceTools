@@ -44,8 +44,8 @@ class Catalog:
 							else:
 								item["callsigns"][user["cs"]].append(date_str)
 							cur_catalog[cur_index] = item
-							self.msg += f"{old_callsign} changed their callsign to {user['cs']}"
-							print(f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}")
+							self.msg += f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}\n"
+							print(f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}\n")
 				if not match_check:
 					now = datetime.now()
 					date_str = now.strftime("%Y-%m-%d %H-%M-%S")

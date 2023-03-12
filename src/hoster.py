@@ -19,7 +19,7 @@ def main():
 	catalog = Catalog()
 	print("Starting Tracking...")
 	while True:
-		users = get_users()
+		users = get_users()[1]
 		catalog.parse(users)
 		if catalog.msg != "":
 			myId = sendMsg(myId, catalog.msg, geofs_session_id)
