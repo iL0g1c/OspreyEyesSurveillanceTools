@@ -17,7 +17,7 @@
 ### Build from source
 1. Clone the repository.
 2. Install pyinstaller
-3. Run ```pyinstaller -n callsignTracker --onefile src/main.py --distpath bin/```
+3. Run ```pyinstaller -n callsignTracker --onefile src/callsignTracker.py --distpath bin/```
 4. Wait for build to finish.
 5. Run the executable from the windows explorer.
 
