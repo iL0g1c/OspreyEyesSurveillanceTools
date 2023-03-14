@@ -1,9 +1,9 @@
 **DISCLAIMER: THIS SCRIPT IS IN BETA AND MAY NOT PERFORM AS EXPECTED.**
-# GeoFS Callsign Tracker
+# Osprey Eyes Surveillance Tools
 ### An OspreyEyes Creation
 
 ## How to run from release
-1. Go to releases and download the windows 10 executable. (This only works on windows 10)
+1. Go to releases and download the windows 10 executable for you chosen product. (This only works on windows 10)
 2. Run executable.
 3. The data log will be created in the same folder as the executable.
 
@@ -17,7 +17,7 @@
 ### Build from source
 1. Clone the repository.
 2. Install pyinstaller
-3. Run ```pyinstaller -n callsignTracker --onefile src/callsignTracker.py --distpath bin/```
+3. Use the pyinstaller build command as outlined in pysinstaller documentation.
 4. Wait for build to finish.
 5. Run the executable from the windows explorer.
 
@@ -31,21 +31,25 @@ In GeoFS a user can change their callsign to anything that is available, but the
 Additionally, this script would be useful in figuring out spies in your force, as you can see their callsigns from other forces they are in.
 
 
-## How Callsign Tracker Works
+## How the Callsign Tracker Module Works
 This callsign tracker uses the GeoFS map API to get all online users from the server.
 Next, it checks every users callsign and account ID against what is currently in the database.
 If it detects a changed callsign, it adds this to the database with all of that users previous callsigns.
 This way you can tell if users are changing their callsigns, as you can see their previous callsigns.
 
+## How the Chat Logger Module Works
+This script is currently only available in the OspreyEyes bot, as the code is available elsewhere.
+It pulls the recent chat messages from the multiplayer server, and then records them in a jsonlines file.
+The original creator of this script is Ariakim Taiyo, but it was written in javascript and I rewrote it in python.
+
 ## Problems
-This does not completly stop callsign changes, as you can just create a new account to log in with. This will be a lot more difficult (email and phone number verification), but will hopefully cut down a lot of this type of FRP.
-I have not tested running the script 24/7, and I suspect the preformance will degrade over time, as the extremely innificant "for loops" increase as the database grows. I would suggest only using this script during a specific time (Ex. A specific battle or dogfight). That way you can figure out changes when you need it most.
-The user has to be online on GeoFS for their callsign to update in the database. If they change their callsign, but don't join the server, this script won't detect that. This shouldn't be a problem though, since they can't commit FRP while offline.
-**Additionally, you will have to manually read the callsigns.jsonl file in order to retrieve user data, since a GUI has yet to be implemented.**
+1. This does not completly stop callsign changes, as you can just create a new account to log in with. This will be a lot more difficult (email and phone number verification), but will hopefully cut down a lot of this type of FRP.
+2. The user has to be online on GeoFS for their callsign to update in the database. If they change their callsign, but don't join the server, this script won't detect that. This shouldn't be a problem though, since they can't commit FRP while offline.
+3. The GUI is very basic/unstable, and the search algorithm does not work well.
+4. In the beta there is no error catch system for the bot, and it can take up to 30 seconds for a command to fetch a response.
 
 ## Planned Features
 1. Porting to other Operating Systems besides Windows.
 2. Improved performance
-3. GUI to access callsign data
 
 Feel free to suggest more ideas/bugs in the ideas tab.
