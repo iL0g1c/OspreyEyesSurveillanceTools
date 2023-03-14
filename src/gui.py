@@ -1,21 +1,20 @@
+from json import load
 import PySimpleGUI as sg
 import threading
 
 from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
 import textwrap
 
-from catalog import Catalog
+from catalog import parseCallsigns, loadCallsignFile
 from callsignTracker import guiRunner
 
 def search(query, method):
     threshold = 50
     results = []
-    catalog = Catalog()
-    error = catalog.load_catalog()
+    error, callsignData = loadCallsignFile()
     if error:
         return error, None
-    for entry in catalog.catalog:
+    for entry in callsignData:
         if method == "Account ID":
             ratio = fuzz.token_set_ratio(query, entry["acid"])
             if ratio >= threshold:
