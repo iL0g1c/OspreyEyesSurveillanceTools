@@ -8,8 +8,8 @@ from mutiplayer_api import init_server_instance, sendMsg
 def setup():
 	load_dotenv()
 	geofs_session_id = os.getenv("GEOFS_SESSION_ID")
-	if not os.path.exists("catalog.jsonl"):
-		with open("catalog.jsonl", "w") as fp:
+	if not os.path.exists("callsigns.jsonl"):
+		with open("callsigns.jsonl", "w") as fp:
 			pass
 	return geofs_session_id
 

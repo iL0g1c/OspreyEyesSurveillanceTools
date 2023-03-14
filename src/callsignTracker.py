@@ -4,8 +4,8 @@ from catalog import Catalog
 from map_api import get_users
 
 def setup():
-	if not os.path.exists("catalog.jsonl"):
-		with open("catalog.jsonl", "w") as fp:
+	if not os.path.exists("callsigns.jsonl"):
+		with open("callsigns.jsonl", "w") as fp:
 			pass
 
 def guiRunner(stop_event):

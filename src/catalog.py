@@ -9,15 +9,15 @@ class Catalog:
 		self.msg = ""
 		
 	def load_catalog(self):
-		if not os.path.exists("catalog.jsonl"):
+		if not os.path.exists("callsigns.jsonl"):
 			return 1
 		self.catalog = []
-		with jsonlines.open("catalog.jsonl") as reader:
+		with jsonlines.open("callsigns.jsonl") as reader:
 			for obj in reader:
 				self.catalog.append(obj)
 
 	def save_catalog(self):
-		with jsonlines.open("catalog.jsonl", mode = 'w') as writer:
+		with jsonlines.open("callsigns.jsonl", mode = 'w') as writer:
 			for item in self.catalog:
 				writer.write(item)
 

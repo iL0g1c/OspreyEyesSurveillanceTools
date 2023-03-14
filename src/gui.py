@@ -57,7 +57,7 @@ def main():
             error, results = search(query, method)
 
             if error == 1:
-                sg.popup_error("There is not a catalog.jsonl file in the same program's directory. Please generate one with the Callsign Tracker.")
+                sg.popup_error("There is not a callsigns.jsonl file in the same program's directory. Please generate one with the Callsign Tracker.")
             elif values["-SEARCHTYPE-"] not in ("Account ID", "Callsign"):
                 sg.popup_error("Invalid search method. Please select an option from the dropdown menu.") 
             elif values["-SEARCH-"] == "":
