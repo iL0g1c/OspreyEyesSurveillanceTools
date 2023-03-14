@@ -41,7 +41,7 @@ This way you can tell if users are changing their callsigns, as you can see thei
 This does not completly stop callsign changes, as you can just create a new account to log in with. This will be a lot more difficult (email and phone number verification), but will hopefully cut down a lot of this type of FRP.
 I have not tested running the script 24/7, and I suspect the preformance will degrade over time, as the extremely innificant "for loops" increase as the database grows. I would suggest only using this script during a specific time (Ex. A specific battle or dogfight). That way you can figure out changes when you need it most.
 The user has to be online on GeoFS for their callsign to update in the database. If they change their callsign, but don't join the server, this script won't detect that. This shouldn't be a problem though, since they can't commit FRP while offline.
-**Additionally, you will have to manually read the catalog.jsonl file in order to retrieve user data, since a GUI has yet to be implemented.**
+**Additionally, you will have to manually read the callsigns.jsonl file in order to retrieve user data, since a GUI has yet to be implemented.**
 
 ## Planned Features
 1. Porting to other Operating Systems besides Windows.
