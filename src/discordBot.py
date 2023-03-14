@@ -13,7 +13,7 @@ intents = discord.Intents.all()
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_TOKEN_BETA")
 geofs_session_id = os.getenv("GEOFS_SESSION_ID")
-bot = commands.Bot(intents=intents, command_prefix="osprey! ")
+bot = commands.Bot(intents=intents, command_prefix="beta! ")
 CATALOG_DIR = "catalog/"
 
 def setup():

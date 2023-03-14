@@ -1,16 +1,19 @@
 import time
 import os
-from catalog import Catalog
+from catalog import parseCallsigns
 from map_api import get_users
 
+CATALOG_DIR = "catalog/"
+
 def setup():
-	if not os.path.exists("callsigns.jsonl"):
-		with open("callsigns.jsonl", "w") as fp:
+	if not os.path.exists(CATALOG_DIR):
+		os.mkdir(CATALOG_DIR)
+	if not os.path.exists(CATALOG_DIR + "callsigns.jsonl"):
+		with open(CATALOG_DIR + "callsigns.jsonl", "w") as fp:
 			pass
 
 def guiRunner(stop_event):
 	setup()
-	catalog = Catalog()
 	print("Starting Tracking...")
 	while True:
 		error, users = get_users()
@@ -19,7 +22,7 @@ def guiRunner(stop_event):
 				print(f"Exiting tracker in... ({i+1})")
 				time.sleep(1)
 			break
-		catalog.parse(users)
+		parseCallsigns(users)
 		if stop_event.is_set():
 			print("Closed.")
 			break
@@ -27,7 +30,6 @@ def guiRunner(stop_event):
 
 def main():
 	setup()
-	catalog = Catalog()
 	print("Starting Tracking...")
 	while True:
 		error, users = get_users()
@@ -36,7 +38,7 @@ def main():
 				print(f"Exiting in... ({i+1})")
 				time.sleep(1)
 			break
-		catalog.parse(users)
+		parseCallsigns(users)
 		time.sleep(1)
 
 if __name__ in "__main__":
