@@ -3,7 +3,7 @@ import discord
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from map_api import get_users
-from catalog import Catalog
+from catalog import parseCallsigns
 from mutiplayer_api import init_server_instance, getMessages
 from guildFiles import loadGuildFile, saveGuildFile
 from data import saveData, loadData
@@ -14,39 +14,52 @@ load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_TOKEN_BETA")
 geofs_session_id = os.getenv("GEOFS_SESSION_ID")
 bot = commands.Bot(intents=intents, command_prefix="osprey! ")
+CATALOG_DIR = "catalog/"
 
 def setup():
-	if not os.path.exists("callsigns.jsonl"):
-		with open("callsigns.jsonl", "w") as fp:
+	if not os.path.exists(CATALOG_DIR):
+		os.mkdir(CATALOG_DIR)
+	if not os.path.exists(CATALOG_DIR + "callsigns.jsonl"):
+		with open(CATALOG_DIR + "callsigns.jsonl", "w") as fp:
 			pass
-	if not os.path.exists("guilds.jsonl"):
-		with open("guilds.jsonl", "w") as fp:
+	if not os.path.exists(CATALOG_DIR + "guilds.jsonl"):
+		with open(CATALOG_DIR + "guilds.jsonl", "w") as fp:
 			pass
-	if not os.path.exists("chat.jsonl"):
-		with open("chat.jsonl", "w") as fp:
+	if not os.path.exists(CATALOG_DIR + "chat.jsonl"):
+		with open(CATALOG_DIR + "chat.jsonl", "w") as fp:
 			pass
-	if not os.path.exists("data.json"):
-		with open("data.json", "w") as fp:
+	if not os.path.exists(CATALOG_DIR + "data.json"):
+		with open(CATALOG_DIR + "data.json", "w") as fp:
 			fp.write("{}")
 	return geofs_session_id
 
 @tasks.loop(seconds=1)
-async def printUsers(catalog, channel):
+async def printUsers(bot):
 	users = get_users()[1]
-	catalog.parse(users)
-	if catalog.msg != "":
-		await channel.send(discord.utils.escape_markdown(catalog.msg))
+	msg = parseCallsigns(users)
+
+	error, guildData = loadGuildFile()
+	for i in range(len(guildData)):
+		if guildData[i]["callsignTrackerEnabled"]:
+			channel = bot.get_channel(guildData[i]["callsignTrackerChannel"])
+			if msg != "":
+				await channel.send(discord.utils.escape_markdown(msg))
+		
 
 @tasks.loop(seconds=1)
-async def printMessages(channel):
+async def printMessages(bot):
 	data = loadData()
 	myId, lastMsgId, messages = getMessages(data["myId"], geofs_session_id, data["lastMsgId"])
 	data["lastMsgId"] = lastMsgId
 	data["myId"] = myId
 	saveData(data)
 	msg = parseChat(messages)
-	if msg != "":
-		await channel.send(discord.utils.escape_markdown(msg))
+	error, guildData = loadGuildFile()
+	for i in range(len(guildData)):
+		if guildData[i]["chatTrackerEnabled"]:
+			channel = bot.get_channel(guildData[i]["chatTrackerChannel"])
+			if msg != "":
+				await channel.send(discord.utils.escape_markdown(msg))
 
 
 
@@ -56,12 +69,14 @@ async def on_ready():
 	data["myId"], data["lastMsgId"] = init_server_instance(geofs_session_id, returnMyId=True)
 	saveData(data)
 	print("Bot has connected to discord.")
+	printMessages.start(bot)
+	printUsers.start(bot)
 
 @bot.event
 async def on_guild_join(guild):
 	inDatabase = False
 	print(f"OspreyEyes has been added to {guild.id}.\n Setting up...")
-	error, guildData = loadGuildFile(returnAllGuilds=True)
+	error, guildData = loadGuildFile()
 
 	for obj in guildData:
 		if obj["id"] == guild.id:
@@ -81,47 +96,45 @@ async def on_guild_join(guild):
 
 @bot.command(brief="Toggle callsign tracker on and off.", description="Toggle callsign tracker on and off.")
 async def toggleCallsigns(ctx):
-	error, guildData = loadGuildFile(guildID = ctx.message.guild.id)
-	channel = bot.get_channel(guildData["callsignTrackerChannel"])
-	
-	catalog = Catalog()
+	await ctx.send("Toggling tracking...")
+	error, guildData = loadGuildFile()
+	for i in range(len(guildData)):
+		if guildData[i]["id"] == ctx.message.guild.id:
+			if guildData[i]["callsignTrackerEnabled"]:
+				guildData[i]["callsignTrackerEnabled"] = False
+				await ctx.send("Tracking terminated.")
+			else:
+				guildData[i]["callsignTrackerEnabled"] = True
+				await ctx.send("Tracking started.")
 
-	if guildData["callsignTrackerEnabled"]:
-		printUsers.cancel()
-		guildData["callsignTrackerEnabled"] = False
-		await channel.send("Tracking terminated.")
-	else:
-		printUsers.start(catalog, channel)
-		guildData["callsignTrackerEnabled"] = True
-		await channel.send("Trackign started.")
-
-	saveGuildFile([guildData])
+	saveGuildFile(guildData)
 
 @bot.command(brief="Toggle chat tracker on and off.", description="Toggle chat tracker on and off.")
 async def toggleChat(ctx):
-	error, guildData = loadGuildFile(guildID = ctx.message.guild.id)
-	channel = bot.get_channel(guildData["chatTrackerChannel"])
+	await ctx.send("Toggling tracking...")
+	error, guildData = loadGuildFile()
 
-	if guildData["chatTrackerEnabled"]:
-		printMessages.cancel()
-		guildData["chatTrackerEnabled"] = False
-		await channel.send("Tracking terminated.")
-	else:
-		printMessages.start(channel)
-		guildData["chatTrackerEnabled"] = True
-		await channel.send("Tracking started.")
-	saveGuildFile([guildData])
+	for i in range(len(guildData)):
+		if guildData[i]["id"] == ctx.message.guild.id:
+			if guildData[i]["chatTrackerEnabled"]:
+				guildData[i]["chatTrackerEnabled"] = False
+				await ctx.send("Tracking terminated.")
+			else:
+				guildData[i]["chatTrackerEnabled"] = True
+				await ctx.send("Tracking started.")
+	saveGuildFile(guildData)
 
 @bot.command(brief="Set callsign tracker channel.", description="Set callsign tracker channel.")
 async def setChannel(ctx, trackerType, channel):
-	error, guildData = loadGuildFile(guildID = ctx.message.guild.id)
-	if trackerType == "callsign":
-		guildData["callsignTrackerChannel"] = int(channel)
-	elif trackerType == "chat":
-		guildData["chatTrackerChannel"] = int(channel)
-	saveGuildFile([guildData])
-	await ctx.send(f"Binded the {trackerType} tracker to channel id: {channel}")
-
+	error, guildData = loadGuildFile()
+	for i in range(len(guildData)):
+		if guildData[i]["id"] == ctx.message.guild.id:
+			if trackerType == "callsign":
+				guildData[i]["callsignTrackerChannel"] = int(channel)
+			elif trackerType == "chat":
+				guildData[i]["chatTrackerChannel"] = int(channel)
+			await ctx.send(f"Binded the {trackerType} tracker to channel id: {channel}")
+	saveGuildFile(guildData)
 
 @bot.command(brief="Check connection.", description="Check connection.")
 async def ping(ctx):

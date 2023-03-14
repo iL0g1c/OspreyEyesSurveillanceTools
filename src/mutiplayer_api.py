@@ -1,6 +1,5 @@
 import requests
 import json
-from data import loadData, saveData
 
 def init_server_instance(geofs_session_id, returnMyId=False): # initializes connection and gains mandatory variables from server.
 	# initializes server connection and gets details from server.
