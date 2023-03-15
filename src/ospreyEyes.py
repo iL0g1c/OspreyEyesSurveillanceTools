@@ -11,7 +11,7 @@ from chat import parseChat
 
 intents = discord.Intents.all()
 load_dotenv()
-BOT_TOKEN = os.getenv("DISCORD_TOKEN_BETA")
+BOT_TOKEN = os.getenv("DISCORD_TOKEN")
 geofs_session_id = os.getenv("GEOFS_SESSION_ID")
 bot = commands.Bot(intents=intents, command_prefix="beta! ")
 CATALOG_DIR = "catalog/"
