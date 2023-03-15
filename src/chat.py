@@ -1,5 +1,6 @@
 import jsonlines
 from datetime import datetime
+import urllib.parse
 
 CATALOG_DIR = "catalog/"
 
@@ -19,7 +20,7 @@ def parseChat(messages):
     chatData = loadChat()
     msg = ""
     for message in messages:
-        message["msg"] = message["msg"].replace("%20", " ")
+        message["msg"] = urllib.parse.unquote(message["msg"])
         now = datetime.now()
         date_str = now.strftime("%Y-%m-%d %H-%M-%S")
         formated = {
