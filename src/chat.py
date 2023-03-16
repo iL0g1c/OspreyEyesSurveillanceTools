@@ -4,6 +4,11 @@ import urllib.parse
 
 CATALOG_DIR = "catalog/"
 
+def appendChat(chatData):
+    with jsonlines.open(CATALOG_DIR + "chat.jsonl", mode="a") as writer:
+        for message in chatData:
+            writer.write(message)
+
 def loadChat():
     chatData = []
     with jsonlines.open(CATALOG_DIR + "chat.jsonl") as reader:
@@ -17,7 +22,7 @@ def saveChat(chatData):
             writer.write(message)
 
 def parseChat(messages):
-    chatData = loadChat()
+    currentChatData = []
     msg = ""
     for message in messages:
         message["msg"] = urllib.parse.unquote(message["msg"])
@@ -28,7 +33,7 @@ def parseChat(messages):
             "msg": message["msg"],
             "time": date_str
         }
-        chatData.append(formated)
+        currentChatData.append(formated)
         msg += f"{message['acid']}> {message['cs']}: {message['msg']}\n"
-    saveChat(chatData)
+    appendChat(currentChatData)
     return msg

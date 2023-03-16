@@ -3,7 +3,7 @@ import discord
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from map_api import get_users
-from catalog import parseCallsigns
+from callsigns import parseCallsigns
 from mutiplayer_api import init_server_instance, getMessages
 from guildFiles import loadGuildFile, saveGuildFile
 from data import saveData, loadData
@@ -11,7 +11,7 @@ from chat import parseChat
 
 intents = discord.Intents.all()
 load_dotenv()
-BOT_TOKEN = os.getenv("DISCORD_TOKEN")
+BOT_TOKEN = os.getenv("DISCORD_TOKEN_BETA")
 geofs_session_id = os.getenv("GEOFS_SESSION_ID")
 bot = commands.Bot(intents=intents, command_prefix="beta! ")
 CATALOG_DIR = "catalog/"

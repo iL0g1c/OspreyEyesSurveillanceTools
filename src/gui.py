@@ -5,7 +5,7 @@ import threading
 from fuzzywuzzy import fuzz
 import textwrap
 
-from catalog import parseCallsigns, loadCallsignFile
+from callsigns import parseCallsigns, loadCallsignFile
 from callsignTracker import guiRunner
 
 def search(query, method):
