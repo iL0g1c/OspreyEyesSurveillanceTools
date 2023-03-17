@@ -1,54 +1,48 @@
 import jsonlines
 from datetime import datetime
 import os
+import asyncio
+import motor.motor_asyncio
 
-CATALOG_DIR = "catalog/"
-		
-def loadCallsignFile():
-	if not os.path.exists(CATALOG_DIR + "callsigns.jsonl"):
-		return 1, None
-	callsignData = []
-	with jsonlines.open(CATALOG_DIR + "callsigns.jsonl") as reader:
-		for obj in reader:
-			callsignData.append(obj)
-	return None, callsignData
+password = os.environ.get("MONGODB_PWD")
+connection_string = f"mongodb://mongo_db_admin:password@45.76.164.130:27017/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+1.5.0"
+client = motor.motor_asyncio.AsyncIOMotorClient(connection_string)
 
-def saveCallsignFile(callsignData):
-	with jsonlines.open(CATALOG_DIR + "callsigns.jsonl", mode = 'w') as writer:
-		for item in callsignData:
-			writer.write(item)
+database = client["OspreyEyes"]
+callsigns = database["callsigns"]
 
-def parseCallsigns(users):
-	error, callsignData = loadCallsignFile()
-	msg = ""
-	for user in users:
-		match_check = False
-		if user["acid"] != None and user["cs"] != "Foo" and user["cs"] != "":
-			for item in callsignData:
-				if item["acid"] == user["acid"]:
-					match_check = True
-					if item["cur_callsign"] != user["cs"]:
-						old_callsign = item["cur_callsign"]
-						item["cur_callsign"] = user["cs"]
-						
-						now = datetime.now()
-						date_str = now.strftime("%Y-%m-%d %H-%M-%S")
-						cur_index = callsignData.index(item)
-						
-						if user["cs"] not in item["callsigns"]:
-							item["callsigns"][user["cs"]] = [date_str]
-						else:
-							item["callsigns"][user["cs"]].append(date_str)
-						callsignData[cur_index] = item
-						msg += f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}\n"
-						print(f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}\n")
-			if not match_check:
-				now = datetime.now()
-				date_str = now.strftime("%Y-%m-%d %H-%M-%S")
-				callsignData.append({
-					"acid": int(user["acid"]),
-					"cur_callsign": user["cs"],
-					"callsigns": {user["cs"]: [date_str]}
-				})
-	saveCallsignFile(callsignData)
-	return msg
+async def update_callsign(user):
+    query = {"acid": user["acid"]}
+    accountData = await callsigns.find_one(query)
+    if accountData:
+        if accountData["cur_callsign"] != user["cs"]:
+            old_callsign = accountData["cur_callsign"]
+            accountData["cur_callsign"] = user["cs"]
+            now = datetime.now()
+            if user["cs"] not in accountData["callsigns"]:
+                accountData["callsigns"][user["cs"]] = [now]
+            else:
+                accountData["callsigns"][user["cs"]].append(now)
+            await callsigns.update_one(query, {'$set': accountData})
+            print(f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}\n")
+            return f"{user['acid']}({old_callsign}) changed their callsign to {user['cs']}\n"
+    else:
+        now = datetime.now()
+        newAccountData = {
+            "acid": int(user["acid"]),
+            "cur_callsign": user["cs"],
+            "callsigns": {user["cs"]: [now]}
+        }
+        await callsigns.insert_one(newAccountData)
+        return ""
+
+async def parseCallsigns(users):
+    msg = ""
+    tasks = []
+    for user in users:
+        if user["acid"] is not None and user["cs"] != "Foo" and user["cs"] != "":
+            task = asyncio.create_task(update_callsign(user))
+            tasks.append(task)
+    results = await asyncio.gather(*tasks)
+    msg = "".join([r for r in results if r])
+    return msg

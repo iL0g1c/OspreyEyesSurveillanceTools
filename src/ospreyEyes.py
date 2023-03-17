@@ -19,9 +19,6 @@ CATALOG_DIR = "catalog/"
 def setup():
 	if not os.path.exists(CATALOG_DIR):
 		os.mkdir(CATALOG_DIR)
-	if not os.path.exists(CATALOG_DIR + "callsigns.jsonl"):
-		with open(CATALOG_DIR + "callsigns.jsonl", "w") as fp:
-			pass
 	if not os.path.exists(CATALOG_DIR + "guilds.jsonl"):
 		with open(CATALOG_DIR + "guilds.jsonl", "w") as fp:
 			pass
@@ -36,7 +33,7 @@ def setup():
 @tasks.loop(seconds=1)
 async def printUsers(bot):
 	users = get_users()[1]
-	msg = parseCallsigns(users)
+	msg = await parseCallsigns(users)
 
 	error, guildData = loadGuildFile()
 	for i in range(len(guildData)):
