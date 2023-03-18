@@ -3,12 +3,13 @@ from datetime import datetime
 import os
 import jsonlines
 from bson import json_util
+from dotenv import load_dotenv
 
-
+load_dotenv()
 password = os.environ.get("MONGODB_PWD")
 connection_string = f"mongodb://mongo_db_admin:{password}@45.76.164.130:27017/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+1.5.0"
 client = MongoClient(connection_string)
-		
+
 def loadCallsignFile():
 	if not os.path.exists("callsigns.jsonl"):
 		return 1, None
