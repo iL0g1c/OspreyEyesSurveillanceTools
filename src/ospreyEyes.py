@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from map_api import get_users
 from callsigns import parseCallsigns
-from mutiplayer_api import init_server_instance, getMessages
+from multiplayer_api import init_server_instance, getMessages
 from guildFiles import loadGuildFile, saveGuildFile
 from data import saveData, loadData
 from chat import parseChat
@@ -28,7 +28,6 @@ def setup():
 	if not os.path.exists(CATALOG_DIR + "data.json"):
 		with open(CATALOG_DIR + "data.json", "w") as fp:
 			fp.write("{}")
-	return geofs_session_id
 
 @tasks.loop(seconds=1)
 async def printUsers(bot):
