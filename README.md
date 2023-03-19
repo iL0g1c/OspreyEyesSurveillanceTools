@@ -2,24 +2,11 @@
 # Osprey Eyes Surveillance Tools
 ### An OspreyEyes Creation
 
-## How to run from release
-1. Go to releases and download the windows 10 executable for you chosen product. (This only works on windows 10)
-2. Run executable.
-3. The data log will be created in the same folder as the executable.
-
 ## How to run from source
-### Run using python
 1. Clone the repository.
 2. You must have python installed on your machine.
 3. You must install all packages for this script. Look in the code, since I am too lazy to create a requirements.txt file.
 4. Run the script.
-
-### Build from source
-1. Clone the repository.
-2. Install pyinstaller
-3. Use the pyinstaller build command as outlined in pysinstaller documentation.
-4. Wait for build to finish.
-5. Run the executable from the windows explorer.
 
 _It is possible to use pyinstaller to build for another target OS, but this has not been tested._
 
@@ -46,10 +33,7 @@ The original creator of this script is Ariakim Taiyo, but it was written in java
 1. This does not completly stop callsign changes, as you can just create a new account to log in with. This will be a lot more difficult (email and phone number verification), but will hopefully cut down a lot of this type of FRP.
 2. The user has to be online on GeoFS for their callsign to update in the database. If they change their callsign, but don't join the server, this script won't detect that. This shouldn't be a problem though, since they can't commit FRP while offline.
 3. The GUI is very basic/unstable, and the search algorithm does not work well.
-4. In the beta there is no error catch system for the bot, and it can take up to 30 seconds for a command to fetch a response.
-
-## Planned Features
-1. Porting to other Operating Systems besides Windows.
-2. Improved performance
+4. There is no error catch system for the bot, and it can take up to 30 seconds for a command to fetch a response.
+5. Support for the gui, callsignTracker, and hoster has been stopped.
 
 Feel free to suggest more ideas/bugs in the ideas tab.
