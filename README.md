@@ -2,14 +2,6 @@
 # Osprey Eyes Surveillance Tools
 ### An OspreyEyes Creation
 
-## How to run from source
-1. Clone the repository.
-2. You must have python installed on your machine.
-3. You must install all packages for this script. Look in the code, since I am too lazy to create a requirements.txt file.
-4. Run the script.
-
-_It is possible to use pyinstaller to build for another target OS, but this has not been tested._
-
 ## Rationale
 In GeoFS MRP, people are constantly commiting FRP actions. Some of these include changing their callsign after being killed, and then rejoining the fight.
 **This script will put an end to this.**
