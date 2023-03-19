@@ -1,21 +1,20 @@
+from json import load
 import PySimpleGUI as sg
 import threading
 
 from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
 import textwrap
 
-from catalog import Catalog
+from callsigns import parseCallsigns, loadCallsignFile
 from callsignTracker import guiRunner
 
 def search(query, method):
     threshold = 50
     results = []
-    catalog = Catalog()
-    error = catalog.load_catalog()
+    error, callsignData = loadCallsignFile()
     if error:
         return error, None
-    for entry in catalog.catalog:
+    for entry in callsignData:
         if method == "Account ID":
             ratio = fuzz.token_set_ratio(query, entry["acid"])
             if ratio >= threshold:
@@ -57,7 +56,7 @@ def main():
             error, results = search(query, method)
 
             if error == 1:
-                sg.popup_error("There is not a catalog.jsonl file in the same program's directory. Please generate one with the Callsign Tracker.")
+                sg.popup_error("There is not a callsigns.jsonl file in the same program's directory. Please generate one with the Callsign Tracker.")
             elif values["-SEARCHTYPE-"] not in ("Account ID", "Callsign"):
                 sg.popup_error("Invalid search method. Please select an option from the dropdown menu.") 
             elif values["-SEARCH-"] == "":

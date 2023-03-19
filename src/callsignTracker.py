@@ -1,43 +1,27 @@
 import time
-import os
-from catalog import Catalog
+from callsigns import parseCallsigns
 from map_api import get_users
+import asyncio
+from dotenv import load_dotenv
 
-def setup():
-	if not os.path.exists("catalog.jsonl"):
-		with open("catalog.jsonl", "w") as fp:
-			pass
+load_dotenv()
 
-def guiRunner(stop_event):
-	setup()
-	catalog = Catalog()
+async def guiRunner(stop_event):
 	print("Starting Tracking...")
 	while True:
 		error, users = get_users()
-		if error:
-			for i in range(10):
-				print(f"Exiting tracker in... ({i+1})")
-				time.sleep(1)
-			break
-		catalog.parse(users)
+		await parseCallsigns(users)
 		if stop_event.is_set():
 			print("Closed.")
 			break
 		time.sleep(1)
 
-def main():
-	setup()
-	catalog = Catalog()
+async def main():
 	print("Starting Tracking...")
 	while True:
 		error, users = get_users()
-		if error:
-			for i in range(10):
-				print(f"Exiting in... ({i+1})")
-				time.sleep(1)
-			break
-		catalog.parse(users)
+		await parseCallsigns(users)
 		time.sleep(1)
 
 if __name__ in "__main__":
-    main()
+    asyncio.run(main())
